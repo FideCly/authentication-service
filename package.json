@@ -4,7 +4,7 @@
   "description": "Authentication service of FidelCly",
   "type": "commonjs",
   "devDependencies": {
-    "@types/node": "^16.11.10",
+    "@types/node": "^18.0.1",
     "concurrently": "^7.2.2",
     "nodemon": "^2.0.18",
     "ts-node": "10.7.0",
