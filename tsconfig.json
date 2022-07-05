@@ -5,9 +5,10 @@
          "es6"
       ],
       "target": "es5",
+      "types": ["node", "jest"],
       "module": "commonjs",
       "moduleResolution": "node",
-      "outDir": "./build",
+      "outDir": "./dist",
       "emitDecoratorMetadata": true,
       "experimentalDecorators": true,
       "sourceMap": true
