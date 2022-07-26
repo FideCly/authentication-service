@@ -3,12 +3,12 @@ import { DataSource } from "typeorm";
 import { User } from "./entity/User";
 
 export const AppDataSource = new DataSource({
-  type: "mysql",
-  host: process.env.DB_HOST,
-  port: parseInt(process.env.DB_PORT || "3308"),
-  username: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+  type: "postgres",
+  host: process.env.DATABASE_HOST || "db",
+  port: Number(process.env.DATABASE_PORT) || 5432,
+  username: process.env.DATABASE_USER || "postgres",
+  password: process.env.DATABASE_PASSWORD || "postgres",
+  database: process.env.DATABASE_NAME || "postgres",
   synchronize: true,
   logging: false,
   entities: [User],
