@@ -4,7 +4,7 @@
   "description": "Authentication service of FidelCly",
   "type": "commonjs",
   "devDependencies": {
-    "@types/jest": "^28.1.7",
+    "@types/jest": "^28.1.8",
     "@types/node": "^18.7.13",
     "concurrently": "^7.3.0",
     "jest": "^28.1.3",
