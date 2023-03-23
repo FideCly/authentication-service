@@ -1,34 +1,41 @@
 version: '3.8'
 services:
-  db:
-    image: mysql
+  adminer:
+    image: adminer
     restart: always
-    env_file: ./.env
-    cap_add:
-      - SYS_NICE  # CAP_SYS_NICE
-    environment:
-      - MYSQL_ROOT_PASSWORD=$MYSQLDB_ROOT_PASSWORD
-      - MYSQL_DATABASE=$MYSQLDB_DATABASE
     ports:
-      - $MYSQLDB_LOCAL_PORT:$MYSQLDB_DOCKER_PORT
+      - 8080:8080
+    networks:
+      - fidecloud
     volumes:
-      - db:/var/lib/mysql
-  
+      - db:/var/lib/postgresql/gui
+
+  db:
+    image: postgres:12
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    networks:
+      - fidecloud
   web:
     depends_on:
       - db
     build: ./
-    env_file: ./.env
     ports:
-      - $NODE_DOCKER_PORT:$NODE_DOCKER_PORT
-    environment:
-      - DB_HOST=db
-      - DB_USER=$MYSQLDB_USER
-      - DB_PASSWORD=$MYSQLDB_ROOT_PASSWORD
-      - DB_NAME=$MYSQLDB_DATABASE
-      - DB_PORT=$MYSQLDB_DOCKER_PORT
-    stdin_open: true
-    tty: true
+      - 50051:50051
+    env_file:
+      - .env.dev
+      - .env.local
+      - .env.test
+    working_dir: /authentication-service
+    volumes:
+      - .:/authentication-service
+    command: "npm run start"
+    networks:
+      - fidecloud
 
-volumes: 
+volumes:
   db:
+
+networks:
+  fidecloud:
+    driver: bridge
