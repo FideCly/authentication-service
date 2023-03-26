@@ -1,8 +1,8 @@
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuthService } from '../../src/auth/service/auth.service';
-import { jwtConstants } from '../../src/auth/constants';
+import { AuthService } from './auth.service';
+import { jwtConstants } from '../constants';
 import { HttpStatus } from '@nestjs/common';
 
 const oneUser = {
