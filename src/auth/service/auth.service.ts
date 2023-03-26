@@ -23,19 +23,16 @@ export class AuthService {
     email,
     password,
   }: RegisterRequestDto): Promise<RegisterResponse> {
-    let auth = await this.repository.findOne({ where: { email } });
-
-    if (auth) {
+    if (await this.repository.findOne({ where: { email } }))
       return { status: HttpStatus.CONFLICT, error: ['E-Mail already exists'] };
-    }
 
-    auth = new Auth();
-
-    auth.email = email;
-    auth.password = this.jwtService.encodePassword(password);
+    const auth: Auth = {
+      ...new Auth(),
+      email: email,
+      password: this.jwtService.encodePassword(password),
+    };
 
     await this.repository.save(auth);
-
     return { status: HttpStatus.CREATED, error: [] };
   }
 
@@ -53,47 +50,40 @@ export class AuthService {
       };
     }
 
-    const isPasswordValid: boolean = this.jwtService.isPasswordValid(
-      password,
-      auth.password,
-    );
-
-    if (!isPasswordValid) {
+    if (!this.jwtService.isPasswordValid(password, auth.password)) {
       return {
         status: HttpStatus.NOT_FOUND,
-        error: ['Password wrong'],
+        error: ['Password is wrong'],
         token: '',
       };
     }
 
     const token: string = this.jwtService.generateToken(auth);
-
     return { token, status: HttpStatus.OK, error: [] };
   }
 
   public async validate({
     token,
   }: ValidateRequestDto): Promise<ValidateResponse> {
-    const decoded: Auth = await this.jwtService.verify(token);
+    try {
+      const decoded: Auth = await this.jwtService.verify(token);
 
-    if (!decoded) {
+      const auth = await this.jwtService.validateUser(decoded);
+      if (!auth) {
+        return {
+          status: HttpStatus.CONFLICT,
+          error: ['User not found'],
+          userId: -1,
+        };
+      }
+
+      return { status: HttpStatus.OK, error: [], userId: decoded.id };
+    } catch (error) {
       return {
         status: HttpStatus.FORBIDDEN,
         error: ['Token is invalid'],
         userId: -1,
       };
     }
-
-    const auth = await this.jwtService.validateUser(decoded);
-
-    if (!auth) {
-      return {
-        status: HttpStatus.CONFLICT,
-        error: ['User not found'],
-        userId: -1,
-      };
-    }
-
-    return { status: HttpStatus.OK, error: [], userId: decoded.id };
   }
 }

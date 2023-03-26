@@ -4,13 +4,12 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  BaseEntity,
 } from 'typeorm';
 
 import { Exclude } from 'class-transformer';
 
 @Entity()
-export class Auth extends BaseEntity {
+export class Auth {
   @PrimaryGeneratedColumn()
   id: number;
 
