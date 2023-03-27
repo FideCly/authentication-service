@@ -11,7 +11,7 @@ export interface RegisterRequest {
 
 export interface RegisterResponse {
   status: number;
-  error: string[];
+  errors: string[];
 }
 
 export interface LoginRequest {
@@ -21,8 +21,8 @@ export interface LoginRequest {
 
 export interface LoginResponse {
   status: number;
-  error: string[];
-  token: string;
+  errors: string[];
+  token?: string | undefined;
 }
 
 export interface ValidateRequest {
@@ -31,8 +31,8 @@ export interface ValidateRequest {
 
 export interface ValidateResponse {
   status: number;
-  error: string[];
-  userId: number;
+  errors: string[];
+  userId?: number | undefined;
 }
 
 export const AUTH_PACKAGE_NAME = 'auth';

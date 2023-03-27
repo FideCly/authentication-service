@@ -8,9 +8,9 @@ services:
     networks:
       - fidecloud
     volumes:
-      - db:/var/lib/postgresql/gui
+      - auth-db:/var/lib/postgresql/gui
 
-  db:
+  auth-db:
     image: postgres:12
     environment:
       - POSTGRES_HOST_AUTH_METHOD=trust
@@ -18,14 +18,13 @@ services:
       - fidecloud
   web:
     depends_on:
-      - db
+      - auth-db
     build: ./
     ports:
       - 50051:50051
     env_file:
       - .env.dev
       - .env.local
-      - .env.test
     working_dir: /authentication-service
     volumes:
       - .:/authentication-service
@@ -34,7 +33,7 @@ services:
       - fidecloud
 
 volumes:
-  db:
+  auth-db:
 
 networks:
   fidecloud:

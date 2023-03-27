@@ -24,7 +24,7 @@ export class AuthService {
     password,
   }: RegisterRequestDto): Promise<RegisterResponse> {
     if (await this.repository.findOne({ where: { email } }))
-      return { status: HttpStatus.CONFLICT, error: ['E-Mail already exists'] };
+      return { status: HttpStatus.CONFLICT, errors: ['E-Mail already exists'] };
 
     const auth: Auth = {
       ...new Auth(),
@@ -33,7 +33,7 @@ export class AuthService {
     };
 
     await this.repository.save(auth);
-    return { status: HttpStatus.CREATED, error: [] };
+    return { status: HttpStatus.CREATED, errors: [] };
   }
 
   public async login({
@@ -45,21 +45,19 @@ export class AuthService {
     if (!auth) {
       return {
         status: HttpStatus.NOT_FOUND,
-        error: ['E-Mail not found'],
-        token: '',
+        errors: ['E-Mail not found'],
       };
     }
 
     if (!this.jwtService.isPasswordValid(password, auth.password)) {
       return {
         status: HttpStatus.NOT_FOUND,
-        error: ['Password is wrong'],
-        token: '',
+        errors: ['Password is wrong'],
       };
     }
 
     const token: string = this.jwtService.generateToken(auth);
-    return { token, status: HttpStatus.OK, error: [] };
+    return { token, status: HttpStatus.OK, errors: [] };
   }
 
   public async validate({
@@ -72,17 +70,15 @@ export class AuthService {
       if (!auth) {
         return {
           status: HttpStatus.CONFLICT,
-          error: ['User not found'],
-          userId: -1,
+          errors: ['User not found'],
         };
       }
 
-      return { status: HttpStatus.OK, error: [], userId: decoded.id };
+      return { status: HttpStatus.OK, errors: [], userId: decoded.id };
     } catch (error) {
       return {
         status: HttpStatus.FORBIDDEN,
-        error: ['Token is invalid'],
-        userId: -1,
+        errors: ['Token is invalid'],
       };
     }
   }

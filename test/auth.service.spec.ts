@@ -14,6 +14,7 @@ import {
   registerFixture,
 } from './auth.fixture';
 import { Repository } from 'typeorm';
+import { LoginResponse } from 'src/auth/auth.pb';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -57,8 +58,8 @@ describe('AuthService', () => {
 
       const res = await service.register(registerFixture);
       expect(res.status).toEqual(HttpStatus.CONFLICT);
-      expect(res.error.length).toEqual(1);
-      expect(res.error[0]).toBe('E-Mail already exists');
+      expect(res.errors.length).toEqual(1);
+      expect(res.errors[0]).toBe('E-Mail already exists');
     });
 
     it('should return created status when credentials are valid', async () => {
@@ -66,7 +67,7 @@ describe('AuthService', () => {
 
       const res = await service.register(registerFixture);
       expect(res.status).toEqual(HttpStatus.CREATED);
-      expect(res.error.length).toEqual(0);
+      expect(res.errors.length).toEqual(0);
     });
   });
 
@@ -76,8 +77,8 @@ describe('AuthService', () => {
 
       const res = await service.login(loginFixture);
       expect(res.status).toEqual(HttpStatus.NOT_FOUND);
-      expect(res.error.length).toEqual(1);
-      expect(res.error[0]).toBe('E-Mail not found');
+      expect(res.errors.length).toEqual(1);
+      expect(res.errors[0]).toBe('E-Mail not found');
     });
 
     it('should return not found error when credentials are invalid', async () => {
@@ -87,9 +88,9 @@ describe('AuthService', () => {
 
       const res = await service.login(incorrectLoginFixture);
       expect(res.status).toEqual(HttpStatus.NOT_FOUND);
-      expect(res.error.length).toEqual(1);
-      expect(res.error[0]).toBe('Password is wrong');
-      expect(res.token.length).toBe(0);
+      expect(res.errors.length).toEqual(1);
+      expect(res.errors[0]).toBe('Password is wrong');
+      expect(res.token).toBeUndefined();
     });
 
     it('should return JWT object when credentials are valid', async () => {
@@ -99,8 +100,8 @@ describe('AuthService', () => {
 
       const res = await service.login(loginFixture);
       expect(res.status).toEqual(HttpStatus.OK);
-      expect(res.error.length).toEqual(0);
-      expect(res.token.length).toBeGreaterThan(0);
+      expect(res.errors.length).toEqual(0);
+      expect(res.token).toBeDefined();
     });
   });
 
@@ -109,14 +110,15 @@ describe('AuthService', () => {
       jest
         .spyOn(repository, 'findOne')
         .mockResolvedValue({ ...new Auth(), ...authFixture });
-      const loginRes = await service.login(loginFixture);
+      const loginRes: LoginResponse = await service.login(loginFixture);
 
       const res = await service.validate({
-        token: loginRes.token,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        token: loginRes.token!,
       });
       expect(res.status).toEqual(HttpStatus.OK);
       expect(res.userId).toEqual(1);
-      expect(res.error.length).toEqual(0);
+      expect(res.errors.length).toEqual(0);
     });
 
     it('should return error when credentials are invalid', async () => {
@@ -128,9 +130,9 @@ describe('AuthService', () => {
         token: 'xxxxx',
       });
       expect(res.status).toEqual(HttpStatus.FORBIDDEN);
-      expect(res.userId).toEqual(-1);
-      expect(res.error.length).toEqual(1);
-      expect(res.error[0]).toBe('Token is invalid');
+      expect(res.errors.length).toEqual(1);
+      expect(res.errors[0]).toBe('Token is invalid');
+      expect(res.userId).toBeUndefined();
     });
   });
 });

@@ -19,12 +19,12 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "proto:install": "npm i git+https://github.com/FideCly/grpc-proto.git",
-    "proto:auth": "protoc --plugin=node_modules/.bin/protoc-gen-ts_proto -I=./node_modules/proto/proto --ts_proto_out=src/auth/ node_modules/proto/proto/auth.proto --ts_proto_opt=nestJs=true --ts_proto_opt=fileSuffix=.pb",
-    "proto:hello": "protoc --plugin=node_modules/.bin/protoc-gen-ts_proto -I=./node_modules/proto/proto --ts_proto_out=src/hello/ node_modules/proto/proto/hello.proto --ts_proto_opt=nestJs=true --ts_proto_opt=fileSuffix=.pb",
+    "proto:auth": "protoc --plugin=node_modules/.bin/protoc-gen-ts_proto -I=./node_modules/@fidecly/grpc-proto/proto --ts_proto_out=src/auth/ node_modules/@fidecly/grpc-proto/proto/auth.proto --ts_proto_opt=nestJs=true --ts_proto_opt=fileSuffix=.pb --experimental_allow_proto3_optional",
     "proto:all": "npm run proto:auth"
   },
   "dependencies": {
     "@casl/ability": "^6.3.3",
+    "@fidecly/grpc-proto": "github:FideCly/grpc-proto",
     "@grpc/grpc-js": "^1.8.12",
     "@grpc/proto-loader": "^0.7.5",
     "@nestjs/common": "^9.0.0",
