@@ -12,7 +12,7 @@ async function bootstrap() {
     {
       transport: Transport.GRPC,
       options: {
-        url: process.env.URL,
+        url: `${process.env.URL}:${process.env.PORT}`,
         package: protobufPackage,
         protoPath: join('node_modules/proto/proto/auth.proto'),
       },
