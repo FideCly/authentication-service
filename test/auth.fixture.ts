@@ -18,5 +18,6 @@ export const incorrectLoginFixture: LoginRequest = {
 export const authFixture = {
   id: 1,
   email: 'test@example.com',
+  uuid: 'generated-uuid',
   password: '$2b$10$yVJMDZuh83zEeNp5Luhh9efpFPa.R8FBK7NoHEQ/5psMUUZ.luaBO',
 };

@@ -13,7 +13,7 @@ import {
   loginFixture,
   registerFixture,
 } from './auth.fixture';
-import { Repository } from 'typeorm';
+import { DeepPartial, Repository } from 'typeorm';
 import { LoginResponse } from 'src/auth/auth.pb';
 
 describe('AuthService', () => {
@@ -64,9 +64,17 @@ describe('AuthService', () => {
 
     it('should return created status when credentials are valid', async () => {
       jest.spyOn(repository, 'findOne').mockResolvedValue(null);
+      jest
+        .spyOn(repository, 'save')
+        .mockResolvedValue(
+          authFixture as
+            | (DeepPartial<Auth> & Auth)
+            | Promise<DeepPartial<Auth> & Auth>,
+        );
 
       const res = await service.register(registerFixture);
       expect(res.status).toEqual(HttpStatus.CREATED);
+      expect(res.userUuid).toBe(authFixture.uuid);
       expect(res.errors.length).toEqual(0);
     });
   });
@@ -117,7 +125,7 @@ describe('AuthService', () => {
         token: loginRes.token!,
       });
       expect(res.status).toEqual(HttpStatus.OK);
-      expect(res.userId).toEqual(1);
+      expect(res.userUuid).toBe(authFixture.uuid);
       expect(res.errors.length).toEqual(0);
     });
 
@@ -132,7 +140,7 @@ describe('AuthService', () => {
       expect(res.status).toEqual(HttpStatus.FORBIDDEN);
       expect(res.errors.length).toEqual(1);
       expect(res.errors[0]).toBe('Token is invalid');
-      expect(res.userId).toBeUndefined();
+      expect(res.userUuid).toBeUndefined();
     });
   });
 });

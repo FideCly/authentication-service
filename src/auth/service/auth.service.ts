@@ -28,7 +28,6 @@ export class AuthService {
     if (conflict) {
       const res = { status: HttpStatus.CONFLICT, errors: [] };
       res.errors.push('E-Mail already exists');
-      console.log(res);
       return res;
     }
 
@@ -39,7 +38,6 @@ export class AuthService {
     };
 
     const res = await this.repository.save(auth);
-    console.log(res);
     return { userUuid: res.uuid, status: HttpStatus.CREATED, errors: [] };
   }
 
