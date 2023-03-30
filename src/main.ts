@@ -22,6 +22,10 @@ async function bootstrap() {
   // app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.listen();
+
+  console.log(
+    `Application is running on: ${process.env.URL}:${process.env.PORT}`,
+  );
 }
 
 bootstrap();
