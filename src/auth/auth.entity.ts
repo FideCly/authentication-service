@@ -4,6 +4,7 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  Generated,
 } from 'typeorm';
 
 import { Exclude } from 'class-transformer';
@@ -12,6 +13,10 @@ import { Exclude } from 'class-transformer';
 export class Auth {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column()
+  @Generated('uuid')
+  uuid: string;
 
   @Column()
   email: string;

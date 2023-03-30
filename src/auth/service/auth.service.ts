@@ -23,8 +23,14 @@ export class AuthService {
     email,
     password,
   }: RegisterRequestDto): Promise<RegisterResponse> {
-    if (await this.repository.findOne({ where: { email } }))
-      return { status: HttpStatus.CONFLICT, errors: ['E-Mail already exists'] };
+    const conflict = await this.repository.findOne({ where: { email } });
+
+    if (conflict) {
+      const res = { status: HttpStatus.CONFLICT, errors: [] };
+      res.errors.push('E-Mail already exists');
+      console.log(res);
+      return res;
+    }
 
     const auth: Auth = {
       ...new Auth(),
@@ -32,8 +38,9 @@ export class AuthService {
       password: this.jwtService.encodePassword(password),
     };
 
-    await this.repository.save(auth);
-    return { status: HttpStatus.CREATED, errors: [] };
+    const res = await this.repository.save(auth);
+    console.log(res);
+    return { userUuid: res.uuid, status: HttpStatus.CREATED, errors: [] };
   }
 
   public async login({
@@ -44,15 +51,15 @@ export class AuthService {
 
     if (!auth) {
       return {
-        status: HttpStatus.NOT_FOUND,
         errors: ['E-Mail not found'],
+        status: HttpStatus.NOT_FOUND,
       };
     }
 
     if (!this.jwtService.isPasswordValid(password, auth.password)) {
       return {
-        status: HttpStatus.NOT_FOUND,
         errors: ['Password is wrong'],
+        status: HttpStatus.NOT_FOUND,
       };
     }
 
@@ -63,23 +70,25 @@ export class AuthService {
   public async validate({
     token,
   }: ValidateRequestDto): Promise<ValidateResponse> {
+    let decoded: Auth;
+
     try {
-      const decoded: Auth = await this.jwtService.verify(token);
-
-      const auth = await this.jwtService.validateUser(decoded);
-      if (!auth) {
-        return {
-          status: HttpStatus.CONFLICT,
-          errors: ['User not found'],
-        };
-      }
-
-      return { status: HttpStatus.OK, errors: [], userId: decoded.id };
+      decoded = await this.jwtService.verify(token);
     } catch (error) {
       return {
         status: HttpStatus.FORBIDDEN,
         errors: ['Token is invalid'],
       };
     }
+
+    const auth = await this.jwtService.validateUser(decoded);
+    if (!auth) {
+      return {
+        status: HttpStatus.CONFLICT,
+        errors: ['User not found'],
+      };
+    }
+
+    return { status: HttpStatus.OK, errors: [], userUuid: decoded.uuid };
   }
 }
