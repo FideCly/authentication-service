@@ -1,38 +1,37 @@
+import { Exclude } from 'class-transformer';
 import {
-  Entity,
+  BaseEntity,
   Column,
-  PrimaryGeneratedColumn,
   CreateDateColumn,
-  UpdateDateColumn,
+  DeleteDateColumn,
+  Entity,
   Generated,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
-import { Exclude } from 'class-transformer';
-
 @Entity()
-export class Auth {
+export class Auth extends BaseEntity {
   @PrimaryGeneratedColumn()
-  id: number;
+  public id!: number;
 
-  @Column()
   @Generated('uuid')
-  uuid: string;
+  @Column({ type: 'varchar' })
+  public uuid!: string;
 
-  @Column()
-  email: string;
+  @Column({ type: 'varchar' })
+  public email!: string;
 
   @Exclude()
-  @Column()
-  password: string;
-
-  @Column({
-    default: true,
-  })
-  isActive: boolean;
+  @Column({ type: 'varchar' })
+  public password!: string;
 
   @CreateDateColumn()
-  createdAt!: Date;
+  public createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt!: Date;
+  public updatedAt!: Date;
+
+  @DeleteDateColumn()
+  public deletedAt!: Date;
 }

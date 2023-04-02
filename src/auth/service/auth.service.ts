@@ -1,15 +1,14 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { LoginResponse, RegisterResponse, ValidateResponse } from '../auth.pb';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Auth } from '../auth.entity';
-import {
-  LoginRequestDto,
-  RegisterRequestDto,
-  ValidateRequestDto,
-} from '../auth.dto';
 import { Repository } from 'typeorm';
 import { JwtService } from './jwt.service';
+import {
+  RegisterRequestDto,
+  LoginRequestDto,
+  ValidateRequestDto,
+} from '../auth.dto';
+import { Auth } from '../auth.entity';
+import { LoginResponse, RegisterResponse, ValidateResponse } from '../auth.pb';
 
 @Injectable()
 export class AuthService {
@@ -23,70 +22,76 @@ export class AuthService {
     email,
     password,
   }: RegisterRequestDto): Promise<RegisterResponse> {
-    const conflict = await this.repository.findOne({ where: { email } });
+    let auth: Auth = await this.repository.findOne({ where: { email } });
 
-    if (conflict) {
-      const res = { status: HttpStatus.CONFLICT, errors: [] };
-      res.errors.push('E-Mail already exists');
-      return res;
+    if (auth) {
+      return { status: HttpStatus.CONFLICT, errors: ['E-Mail already exists'] };
     }
 
-    const auth: Auth = {
-      ...new Auth(),
-      email: email,
-      password: this.jwtService.encodePassword(password),
-    };
+    auth = new Auth();
+    auth.email = email;
+    auth.password = this.jwtService.encodePassword(password);
 
     const res = await this.repository.save(auth);
-    return { userUuid: res.uuid, status: HttpStatus.CREATED, errors: [] };
+
+    return { status: HttpStatus.CREATED, errors: null, userUuid: res.uuid };
   }
 
   public async login({
     email,
     password,
   }: LoginRequestDto): Promise<LoginResponse> {
-    const auth = await this.repository.findOne({ where: { email } });
+    const auth: Auth = await this.repository.findOne({ where: { email } });
 
     if (!auth) {
       return {
-        errors: ['E-Mail not found'],
         status: HttpStatus.NOT_FOUND,
+        errors: ['E-Mail not found'],
+        token: null,
       };
     }
 
-    if (!this.jwtService.isPasswordValid(password, auth.password)) {
+    const isPasswordValid: boolean = this.jwtService.isPasswordValid(
+      password,
+      auth.password,
+    );
+
+    if (!isPasswordValid) {
       return {
-        errors: ['Password is wrong'],
         status: HttpStatus.NOT_FOUND,
+        errors: ['Password wrong'],
+        token: null,
       };
     }
 
     const token: string = this.jwtService.generateToken(auth);
-    return { token, status: HttpStatus.OK, errors: [] };
+
+    return { token, status: HttpStatus.OK, errors: null };
   }
 
   public async validate({
     token,
   }: ValidateRequestDto): Promise<ValidateResponse> {
-    let decoded: Auth;
+    const decoded: Auth = await this.jwtService.verify(token);
 
-    try {
-      decoded = await this.jwtService.verify(token);
-    } catch (error) {
+    if (!decoded) {
       return {
         status: HttpStatus.FORBIDDEN,
         errors: ['Token is invalid'],
+        userUuid: null,
       };
     }
 
-    const auth = await this.jwtService.validateUser(decoded);
+    const auth: Auth = await this.jwtService.validateUser(decoded);
+
     if (!auth) {
       return {
         status: HttpStatus.CONFLICT,
         errors: ['User not found'],
+        userUuid: null,
       };
     }
 
-    return { status: HttpStatus.OK, errors: [], userUuid: decoded.uuid };
+    return { status: HttpStatus.OK, errors: null, userUuid: decoded.uuid };
   }
 }

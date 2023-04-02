@@ -1,8 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { ClientsModule, Transport } from '@nestjs/microservices';
-import { AUTH_PACKAGE_NAME, AUTH_SERVICE_NAME } from './auth/auth.pb';
 import { AuthModule } from './auth/auth.module';
 
 @Module({
@@ -23,19 +21,6 @@ import { AuthModule } from './auth/auth.module';
       logging: false,
       autoLoadEntities: true,
     }),
-    ClientsModule.register([
-      {
-        name: AUTH_SERVICE_NAME,
-        transport: Transport.TCP,
-        options: {
-          // package: AUTH_PACKAGE_NAME,
-          // protoPath: 'node_modules/proto/proto/auth.proto',
-          // url: process.env.API_URL,
-          host: process.env.API_HOST,
-          port: +process.env.API_PORT,
-        },
-      },
-    ]),
     AuthModule,
   ],
 })

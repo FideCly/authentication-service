@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { JwtService as Jwt } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -18,11 +18,11 @@ export class JwtService {
 
   // Decoding the JWT Token
   public async decode(token: string): Promise<unknown> {
-    return this.jwt.decode(token);
+    return this.jwt.decode(token, null);
   }
 
   // Get User by User ID we get from decode()
-  public async validateUser(decoded: any): Promise<Auth | null> {
+  public async validateUser(decoded: any): Promise<Auth> {
     return this.repository.findOne({ where: { uuid: decoded.uuid } });
   }
 
@@ -47,8 +47,6 @@ export class JwtService {
   public async verify(token: string): Promise<any> {
     try {
       return this.jwt.verify(token);
-    } catch (err) {
-      throw new ForbiddenException();
-    }
+    } catch (err) {}
   }
 }
