@@ -26,11 +26,13 @@ import { AuthModule } from './auth/auth.module';
     ClientsModule.register([
       {
         name: AUTH_SERVICE_NAME,
-        transport: Transport.GRPC,
+        transport: Transport.TCP,
         options: {
-          package: AUTH_PACKAGE_NAME,
-          protoPath: 'node_modules/proto/proto/auth.proto',
-          url: process.env.API_URL,
+          // package: AUTH_PACKAGE_NAME,
+          // protoPath: 'node_modules/proto/proto/auth.proto',
+          // url: process.env.API_URL,
+          host: process.env.API_HOST,
+          port: +process.env.API_PORT,
         },
       },
     ]),
