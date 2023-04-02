@@ -1,22 +1,40 @@
 version: '3.8'
 services:
-  db:
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - fidecloud
+    volumes:
+      - auth-db:/var/lib/postgresql/gui
+
+  auth-db:
     image: postgres:12
     environment:
       - POSTGRES_HOST_AUTH_METHOD=trust
-    ports:
-      - 5432:5432
-    volumes:
-      - db:/var/lib/mysql
-
+    networks:
+      - fidecloud
   web:
     depends_on:
-      - db
+      - auth-db
     build: ./
     ports:
-      - 3000:3000
-    environment:
-      - .env
+      - 50051:50051
+    env_file:
+      - .env.dev
+      - .env.local
+    working_dir: /authentication-service
+    volumes:
+      - .:/authentication-service
+    command: "npm run start"
+    networks:
+      - fidecloud
 
-volumes: 
-  db:
+volumes:
+  auth-db:
+
+networks:
+  fidecloud:
+    driver: bridge

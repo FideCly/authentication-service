@@ -1,6 +1,7 @@
 FROM node:latest
-WORKDIR /
-COPY package.json .
+WORKDIR /authentication-service
+COPY package.json ./
 RUN npm install
-COPY . .
-CMD npm start
+COPY . ./
+CMD npm run start:debug
+EXPOSE 3000
