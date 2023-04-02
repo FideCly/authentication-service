@@ -6,12 +6,13 @@ import { Auth } from './auth.entity';
 import { AuthService } from './service/auth.service';
 import { JwtService } from './service/jwt.service';
 import { JwtStrategy } from './strategy/jwt.strategy';
+import { jwtConstants } from './constants';
 
 @Module({
   imports: [
     JwtModule.register({
-      secret: 'dev',
-      signOptions: { expiresIn: '365d' },
+      secret: jwtConstants.secret,
+      signOptions: { expiresIn: '7d' },
     }),
     TypeOrmModule.forFeature([Auth]),
   ],
