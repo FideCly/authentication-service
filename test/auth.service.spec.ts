@@ -75,7 +75,7 @@ describe('AuthService', () => {
       const res = await service.register(registerFixture);
       expect(res.status).toEqual(HttpStatus.CREATED);
       expect(res.userUuid).toBe(authFixture.uuid);
-      expect(res.errors.length).toEqual(0);
+      expect(res.errors).toBeNull();
     });
   });
 
@@ -97,8 +97,8 @@ describe('AuthService', () => {
       const res = await service.login(incorrectLoginFixture);
       expect(res.status).toEqual(HttpStatus.NOT_FOUND);
       expect(res.errors.length).toEqual(1);
-      expect(res.errors[0]).toBe('Password is wrong');
-      expect(res.token).toBeUndefined();
+      expect(res.errors[0]).toBe('Password wrong');
+      expect(res.token).toBeNull();
     });
 
     it('should return JWT object when credentials are valid', async () => {
@@ -108,7 +108,7 @@ describe('AuthService', () => {
 
       const res = await service.login(loginFixture);
       expect(res.status).toEqual(HttpStatus.OK);
-      expect(res.errors.length).toEqual(0);
+      expect(res.errors).toBeNull();
       expect(res.token).toBeDefined();
     });
   });
@@ -126,7 +126,7 @@ describe('AuthService', () => {
       });
       expect(res.status).toEqual(HttpStatus.OK);
       expect(res.userUuid).toBe(authFixture.uuid);
-      expect(res.errors.length).toEqual(0);
+      expect(res.errors).toBeNull();
     });
 
     it('should return error when credentials are invalid', async () => {
@@ -140,7 +140,7 @@ describe('AuthService', () => {
       expect(res.status).toEqual(HttpStatus.FORBIDDEN);
       expect(res.errors.length).toEqual(1);
       expect(res.errors[0]).toBe('Token is invalid');
-      expect(res.userUuid).toBeUndefined();
+      expect(res.userUuid).toBeNull();
     });
   });
 });

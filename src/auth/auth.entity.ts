@@ -1,6 +1,5 @@
 import { Exclude } from 'class-transformer';
 import {
-  BaseEntity,
   Column,
   CreateDateColumn,
   DeleteDateColumn,
@@ -11,7 +10,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class Auth extends BaseEntity {
+export class Auth {
   @PrimaryGeneratedColumn()
   public id!: number;
 
