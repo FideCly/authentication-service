@@ -25,7 +25,7 @@
   "dependencies": {
     "@casl/ability": "^6.3.3",
     "@fidecly/grpc-proto": "github:FideCly/grpc-proto",
-    "@grpc/grpc-js": "^1.8.12",
+    "@grpc/grpc-js": "^1.8.13",
     "@grpc/proto-loader": "^0.7.5",
     "@nestjs/common": "^9.3.12",
     "@nestjs/config": "^2.3.1",
