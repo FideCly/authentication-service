@@ -68,7 +68,7 @@
     "ts-jest": "29.0.3",
     "ts-loader": "^9.2.3",
     "ts-node": "^10.0.0",
-    "ts-proto": "^1.141.1",
+    "ts-proto": "^1.146.0",
     "tsconfig-paths": "4.1.1",
     "typescript": "^5.0.3"
   },
