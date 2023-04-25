@@ -87,6 +87,8 @@ describe('AuthService', () => {
       expect(res.status).toEqual(HttpStatus.NOT_FOUND);
       expect(res.errors.length).toEqual(1);
       expect(res.errors[0]).toBe('E-Mail not found');
+      expect(res.token).toBeNull();
+      expect(res.userUuid).toBeNull();
     });
 
     it('should return not found error when credentials are invalid', async () => {
@@ -99,9 +101,10 @@ describe('AuthService', () => {
       expect(res.errors.length).toEqual(1);
       expect(res.errors[0]).toBe('Password wrong');
       expect(res.token).toBeNull();
+      expect(res.userUuid).toBeNull();
     });
 
-    it('should return JWT object when credentials are valid', async () => {
+    it('should return JWT object and uuid when credentials are valid', async () => {
       jest
         .spyOn(repository, 'findOne')
         .mockResolvedValue({ ...new Auth(), ...authFixture });
@@ -110,6 +113,8 @@ describe('AuthService', () => {
       expect(res.status).toEqual(HttpStatus.OK);
       expect(res.errors).toBeNull();
       expect(res.token).toBeDefined();
+      expect(res.userUuid).toBeDefined();
+      expect(res.userUuid).toBe(authFixture.uuid);
     });
   });
 

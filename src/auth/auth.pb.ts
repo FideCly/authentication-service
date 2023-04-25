@@ -24,6 +24,7 @@ export interface LoginResponse {
   status: number;
   errors: string[];
   token?: string | undefined;
+  userUuid?: string | undefined;
 }
 
 export interface ValidateRequest {
