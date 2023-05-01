@@ -23,7 +23,7 @@
     "proto:all": "npm run proto:auth"
   },
   "dependencies": {
-    "@casl/ability": "^6.4.0",
+    "@casl/ability": "^6.5.0",
     "@fidecly/grpc-proto": "github:FideCly/grpc-proto",
     "@grpc/grpc-js": "^1.8.14",
     "@grpc/proto-loader": "^0.7.6",
