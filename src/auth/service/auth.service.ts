@@ -21,6 +21,7 @@ export class AuthService {
   public async register({
     email,
     password,
+    role,
   }: RegisterRequestDto): Promise<RegisterResponse> {
     let auth: Auth = await this.repository.findOne({ where: { email } });
 
@@ -31,6 +32,7 @@ export class AuthService {
     auth = new Auth();
     auth.email = email;
     auth.password = this.jwtService.encodePassword(password);
+    auth.role = role;
 
     const res = await this.repository.save(auth);
 
@@ -81,6 +83,7 @@ export class AuthService {
         status: HttpStatus.FORBIDDEN,
         errors: ['Token is invalid'],
         userUuid: null,
+        role: null,
       };
     }
 
@@ -91,9 +94,15 @@ export class AuthService {
         status: HttpStatus.CONFLICT,
         errors: ['User not found'],
         userUuid: null,
+        role: null,
       };
     }
 
-    return { status: HttpStatus.OK, errors: null, userUuid: decoded.uuid };
+    return {
+      status: HttpStatus.OK,
+      errors: null,
+      userUuid: decoded.uuid,
+      role: decoded.role,
+    };
   }
 }

@@ -28,7 +28,11 @@ export class JwtService {
 
   // Generate JWT Token
   public generateToken(auth: Auth): string {
-    return this.jwt.sign({ uuid: auth.uuid, email: auth.email });
+    return this.jwt.sign({
+      uuid: auth.uuid,
+      email: auth.email,
+      role: auth.role,
+    });
   }
 
   // Validate User's password
