@@ -8,6 +8,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Role } from './auth.enum';
 
 @Entity()
 export class Auth {
@@ -15,15 +16,18 @@ export class Auth {
   public id!: number;
 
   @Generated('uuid')
-  @Column({ type: 'varchar' })
+  @Column()
   public uuid!: string;
 
-  @Column({ type: 'varchar' })
+  @Column()
   public email!: string;
 
   @Exclude()
-  @Column({ type: 'varchar' })
+  @Column()
   public password!: string;
+
+  @Column()
+  public role!: Role;
 
   @CreateDateColumn()
   public createdAt!: Date;

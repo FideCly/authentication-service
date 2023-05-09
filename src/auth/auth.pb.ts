@@ -7,6 +7,7 @@ export const protobufPackage = 'auth';
 export interface RegisterRequest {
   email: string;
   password: string;
+  role: string;
 }
 
 export interface RegisterResponse {
@@ -35,6 +36,7 @@ export interface ValidateResponse {
   status: number;
   errors: string[];
   userUuid?: string | undefined;
+  role?: string | undefined;
 }
 
 export const AUTH_PACKAGE_NAME = 'auth';
