@@ -1,16 +1,18 @@
-import { LoginRequest, RegisterRequest } from 'src/auth/auth.pb';
+import { LoginRequestDto, RegisterRequestDto } from 'src/auth/auth.dto';
+import { Role } from 'src/auth/auth.enum';
 
-export const registerFixture: RegisterRequest = {
+export const registerFixture: RegisterRequestDto = {
+  email: 'test@example.com',
+  password: '12345678',
+  role: Role.User,
+};
+
+export const loginFixture: LoginRequestDto = {
   email: 'test@example.com',
   password: '12345678',
 };
 
-export const loginFixture: LoginRequest = {
-  email: 'test@example.com',
-  password: '12345678',
-};
-
-export const incorrectLoginFixture: LoginRequest = {
+export const incorrectLoginFixture: LoginRequestDto = {
   email: 'test@example.com',
   password: '12345678910',
 };
