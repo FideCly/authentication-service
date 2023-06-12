@@ -27,7 +27,7 @@
     "@fidecly/grpc-proto": "github:FideCly/grpc-proto",
     "@grpc/grpc-js": "^1.8.15",
     "@grpc/proto-loader": "^0.7.7",
-    "@nestjs/common": "^9.4.2",
+    "@nestjs/common": "^9.4.3",
     "@nestjs/config": "^2.3.3",
     "@nestjs/core": "^9.4.2",
     "@nestjs/jwt": "^10.0.3",
